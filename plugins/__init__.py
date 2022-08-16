@@ -18,7 +18,7 @@ for i in glob.glob("plugins/*.disabled"):
 def enable():
     def _enable(plugin):
         os.rename("plugins/%s.disabled"%plugin, "plugins/%s.py"%plugin)
-        restart("重启", "已启用此插件，本次操作需要手动重启程序")
+        exit_app("重启", "已启用此插件，本次操作需要手动重启程序")
     return _enable
 
 def info():
@@ -29,7 +29,7 @@ def info():
         
         def disable(plugin):
             os.rename("plugins/%s.py"%plugin, "plugins/%s.disabled"%plugin)
-            restart("重启", "已禁用此插件，本次操作需要手动重启程序")
+            exit_app("重启", "已禁用此插件，本次操作需要手动重启程序")
 
         return {
             "name": plugins[i].__name__,
