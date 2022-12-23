@@ -36,7 +36,7 @@ def info():
             "author": getattr(plugins[i], "__author__", "未知"),
             "version": getattr(plugins[i], "__version__", "1.0.0"),
             "document": doc,
-            "show": lambda: QMessageBox.information(calculator, "插件信息", f"插件文件名：{i}\n插件名称：{plugins[i].__name__}\n插件作者：{getattr(plugins[i], '__author__', '未知')}\n插件版本：{getattr(plugins[i], '__version__', '1.0.0')}\n{doc}"),
+            "show": lambda: QMessageBox.information(calculator, "插件信息", f"插件注册名：{i}\n插件名称：{plugins[i].__name__}\n插件作者：{getattr(plugins[i], '__author__', '未知')}\n插件版本：v{getattr(plugins[i], '__version__', '1.0.0')}\n{doc}"),
             "disable": lambda: disable(i),
         }
     functions = {}
