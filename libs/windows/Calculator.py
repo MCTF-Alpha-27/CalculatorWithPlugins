@@ -1,12 +1,18 @@
 from PyQt6.QtWidgets import *
+from PyQt6.QtCore import *
+from PyQt6.QtGui import *
 from libs.gui.Calculator import Ui_Calculator
 
 class Calculator(QMainWindow):
+    debug = False
+
     def __init__(self) -> None:
         super().__init__()
         self.ui = Ui_Calculator()
         self.ui.setupUi(self)
         self.setWindowTitle("计算器")
+        self.setWindowFlags(self.windowFlags() & ~Qt.WindowType.WindowMaximizeButtonHint)
+        self.setFixedSize(self.size())
         self.ui.pushButton_0.clicked.connect(lambda: self.set_pushButton_name_to_textEdit(self.ui.pushButton_0))
         self.ui.pushButton_1.clicked.connect(lambda: self.set_pushButton_name_to_textEdit(self.ui.pushButton_1))
         self.ui.pushButton_2.clicked.connect(lambda: self.set_pushButton_name_to_textEdit(self.ui.pushButton_2))
@@ -24,7 +30,7 @@ class Calculator(QMainWindow):
         self.ui.pushButton_decimal_point.clicked.connect(lambda: self.set_pushButton_name_to_textEdit(self.ui.pushButton_decimal_point))
         self.ui.pushButton_equal.disconnect()
         self.ui.pushButton_equal.clicked.connect(self.on_pushButton_equal_clicked)
-
+    
     def add_text_to_textEdit(self, text):
         self.ui.textEdit.setText(self.ui.textEdit.toPlainText() + text)
 
