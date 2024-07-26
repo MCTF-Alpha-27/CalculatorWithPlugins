@@ -6,11 +6,10 @@ import sys
 from typing import IO, Any
 from libs import *
 from cmd import Cmd
-from keyword import kwlist
 
 __name__ = "开发者命令行"
 __author__ = "此程序开发者"
-__version__ = "1.1.0"
+__version__ = "1.2.0"
 
 public = {"info": "这是一个公共字典，可以在其中存储变量"}
 
@@ -41,10 +40,11 @@ class DebuggerCmd(Cmd):
         """
         运行代码。
 
-        用法：exec [[-l command] | -i]
+        用法：exec [-l command] [-i] [-p attr]
 
             -l command        运行单行代码。
             -i                启动多行输入模式，运行多段代码。
+            -p attr           输出指定的属性。
 
         多行输入模式命令： [#run] [#rewrite line] [#show] [#exit]
 
@@ -103,18 +103,26 @@ class DebuggerCmd(Cmd):
                 for i in e.args[1:]:
                     print(i)
                 print()
+        elif args[0] == "-p":
+            print(eval(args[1]))
         else:
             print("无效参数%s。"%args[0])
     
-    def get_widget_names(self, widget):  
+    def get_ui_attr(self, widget):
         names = []
-        for child in widget.children():
-            names.append("calculator.ui." + child.objectName())
-            if isinstance(child, QWidget):
-                names.extend(self.get_widget_names(child))
+        for i in dir(widget):
+            if not i.startswith("__"):
+                names.append("calculator.ui." + i)
+        for i in names:
+            try:
+                for j in dir(eval(i)):
+                    if not j.startswith("__"):
+                        names.append(i + "." + j)
+            except:
+                break
         return names
     
-    def get_class_functions(self, _class):
+    def get_class_attr(self, _class):
         functions = []
         for i in dir(_class):
             if not i.startswith("_"):
@@ -122,13 +130,13 @@ class DebuggerCmd(Cmd):
         return functions
     
     def complete_exec(self, text: str, line: str, begidx: int, endidx: int):
-        if line.startswith("exec -l"):
-            widgets = self.get_widget_names(calculator)
-            functions = self.get_class_functions(calculator)
+        if line.startswith("exec -l") or line.startswith("exec -p"):
+            widgets = self.get_ui_attr(calculator.ui)
+            functions = self.get_class_attr(calculator)
             complete = widgets + functions
-            return [i for i in complete if i.lower().startswith(text)]
+            return [i for i in complete if i.startswith(text)]
         if line.startswith("exec"):
-            return ["-l", "-i"]
+            return ["-l", "-i", "-p"]
 
 debuggerCmd = DebuggerCmd()
 
